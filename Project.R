@@ -127,3 +127,59 @@ result_rfe1 <- rfe(x = x_train,
                    rfeControl = control)
 result_rfe1
 predictors(result_rfe1) #print selected features
+
+# Print the results visually
+ggplot(data = result_rfe1, metric = "Accuracy") + theme_bw()
+ggplot(data = result_rfe1, metric = "Kappa") + theme_bw()
+
+
+
+varimp_data <- data.frame(feature = row.names(varImp(result_rfe1))[1:8],
+                          importance = varImp(result_rfe1)[1:8, 1])
+
+ggplot(data = varimp_data, 
+       aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
+  geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") + 
+  geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) + 
+  theme_bw() + theme(legend.position = "none")
+
+
+# Post prediction (on test)
+postResample(predict(result_rfe1, x_test), y_test)
+
+
+
+
+
+# ML models
+library(party)
+library(plyr)
+library(readr)
+
+
+data <- finalDataframe
+
+# split train/test
+indexes = createDataPartition(data$os.event, p = .80, list = F)
+train = data[indexes, ]
+test = data[-indexes, ]
+
+train <- sapply(train,as.numeric)
+test <- sapply(test,as.numeric)
+
+# Give the chart file a name.
+png(file = "decision_tree.png")
+
+# create model
+train <- as.data.frame(train)
+test <- as.data.frame(test)
+model<- ctree(formula=os.event~., data=train)
+plot(model) # saved into 'decision_tree.png'
+
+# prediction
+predict_model<-predict(model, test)
+# creates a table to count how many are classified
+# as os.event and how many are not
+m_at <- table(test$os.event, predict_model)
+m_at
+
