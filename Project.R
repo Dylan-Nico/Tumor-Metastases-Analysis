@@ -38,7 +38,7 @@ library("randomForest")
 # Indeterminate = indeterminate
 # ---------------------------------------
 
-total <- read.csv("/Users/dylan/Desktop/total.csv")
+total <- read.csv("./total.csv")
 
 # trasform into numeric class (1 for mutations, 0 for nonmutations)
 total$TestResult[total$TestResult == "Mutated, Pathogenic"] <- 1
