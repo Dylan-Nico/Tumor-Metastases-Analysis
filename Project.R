@@ -119,33 +119,33 @@ y_train <- target[ inTrain]
 y_test  <- target[-inTrain]
 
 
-# Run RFE
-
-result_rfe1 <- rfe(x = x_train, 
-                   y = y_train, 
-                   sizes = 10, 
-                   rfeControl = control)
-result_rfe1
-predictors(result_rfe1) #print selected features
-
-# Print the results visually
-ggplot(data = result_rfe1, metric = "Accuracy") + theme_bw()
-ggplot(data = result_rfe1, metric = "Kappa") + theme_bw()
-
-
-
-varimp_data <- data.frame(feature = row.names(varImp(result_rfe1))[1:8],
-                          importance = varImp(result_rfe1)[1:8, 1])
-
-ggplot(data = varimp_data, 
-       aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
-  geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") + 
-  geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) + 
-  theme_bw() + theme(legend.position = "none")
-
-
-# Post prediction (on test)
-postResample(predict(result_rfe1, x_test), y_test)
+# # Run RFE
+#
+# result_rfe1 <- rfe(x = x_train,
+#                    y = y_train,
+#                    sizes = 10,
+#                    rfeControl = control)
+# result_rfe1
+# predictors(result_rfe1) #print selected features
+#
+# # Print the results visually
+# ggplot(data = result_rfe1, metric = "Accuracy") + theme_bw()
+# ggplot(data = result_rfe1, metric = "Kappa") + theme_bw()
+#
+#
+#
+# varimp_data <- data.frame(feature = row.names(varImp(result_rfe1))[1:8],
+#                           importance = varImp(result_rfe1)[1:8, 1])
+#
+# ggplot(data = varimp_data,
+#        aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
+#   geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") +
+#   geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) +
+#   theme_bw() + theme(legend.position = "none")
+#
+#
+# # Post prediction (on test)
+# postResample(predict(result_rfe1, x_test), y_test)
 
 
 
